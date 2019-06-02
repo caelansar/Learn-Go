@@ -11,7 +11,7 @@ import (
 type UserService struct {
 }
 
-func (s *UserService) Register(
+func (s *UserService) Register (
 	username,
 	plainpwd string) (user model.User, err error) {
 
@@ -31,9 +31,28 @@ func (s *UserService) Register(
 	return user, err
 }
 
-func (s *UserService) Login (username, password string) (model.User, error) {
+func (s *UserService) Login (username, password string) (tokenStr string, err error) {
+	var (
+		user model.User
+	)
+	DbEngin.Debug().Where("username=?", username).First(&user)
+	if user.ID > 0 {
+		// check password
+		if utils.ValidatePasswd(password, user.Salt, user.Pwd) {
+			//generate token for user
+			tokenStr, err = utils.GenerateToken(user)
+			return
+
+		} else {
+			return "", errors.New("wrong password")
+		}
+
+	}else {
+		return "", errors.New("no such user")
+	}
 
 }
+
 
 
 
