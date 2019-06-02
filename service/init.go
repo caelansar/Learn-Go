@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"webapp/config"
 	"webapp/db"
 	"webapp/model"
 )
@@ -15,7 +16,8 @@ func init() {
 	var (
 		err error
 	)
-	DbEngin, err = db.InitMysql("root", "6666", "localhost", "webapp", "3306")
+	DbEngin, err = db.InitMysql(config.Cfg.MysqlUn, config.Cfg.MysqlPwd,
+		config.Cfg.MysqlHost, config.Cfg.MysqlDb, config.Cfg.MysqlPort)
 	if err != nil{
 		fmt.Println(err)
 		return
